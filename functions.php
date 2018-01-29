@@ -344,7 +344,17 @@ add_action( 'wp_head', 'mytheme_customize_css');
 register_sidebar( array(
 	'name' 			=> __( 'Footer', 'flat-bootstrap-child-egr-faculty' ),
 	'id' 			=> 'sidebar-footer',
-	'description' 	=> __( 'Optional site footer widgets. Add text-widget Contact and Address sections, otherwise the standard egr.vcu.edu address and contact button will be used.', 'flat-bootstrap-child-egr-faculty' ),
+	'description' 	=> __( 'Optional site footer widgets. Suggestion: Add text-widget Contact and Address sections, otherwise the standard egr.vcu.edu address and contact button will be used.', 'flat-bootstrap-child-egr-faculty' ),
+	'before_widget' => '<br><aside id="%1$s" class="widget clearfix %2$s">',
+	'after_widget' 	=> "</aside>",
+	'before_title' 	=> '<h2 class="widget-title">',
+	'after_title' 	=> '</h2>',
+) );
+
+register_sidebar( array(
+	'name' 			=> __( 'EGR Sidebar (custom)', 'flat-bootstrap-child-egr-faculty' ),
+	'id' 			=> 'sidebar-egr-custom',
+	'description' 	=> __( 'Custom sidebar for Engineering Faculty Labs including a search form and any widgets you choose to add here. Suggestion: Add text-widget Contact and Address sections.' ),
 	'before_widget' => '<br><aside id="%1$s" class="widget clearfix %2$s">',
 	'after_widget' 	=> "</aside>",
 	'before_title' 	=> '<h2 class="widget-title">',
@@ -369,4 +379,28 @@ endif; // end ! function_exists
 add_action( 'init', 'remove_plugin_recommendations' );
 function remove_plugin_recommendations() {
 	remove_action( 'tgmpa_register', 'xsbf_bootstrap_register_required_plugins' );
+}
+
+add_action( 'init', 'unregister_sidebars' );
+function unregister_sidebars() {
+	// remove main sidebar so we can "get rid of" the default widgets
+	unregister_sidebar( 'sidebar-1' );
+	// remove footer sidebar so we can customize our own
+	unregister_sidebar( 'sidebar-2' );
+	// remove page bottom sidebar so we can re-register it with the structure to make it look like the preview example
+	unregister_sidebar( 'sidebar-4' );
+}
+
+add_action( 'init', 'register_sidebar_page_bottom' );
+function register_sidebar_page_bottom() {
+  // Page Bottom (Before Footer) Widget Area. Single Column.
+	register_sidebar( array(
+		'name' 			=> __( 'Page Bottom', 'flat-bootstrap-child-egr-faculty' ),
+		'id' 			=> 'sidebar-4',
+		'description' 	=> __( 'Optional section before the footer. This is a single column area that spans the full width of the page. Add a blank text widget to remove the example.', 'flat-bootstrap' ),
+		'before_widget' => '<aside id="%1$s" class="widget %2$s section bg-lightgreen text-center clearfix"><div class="container">',
+		'before_title' 	=> '<h2 class="widget-title">',
+		'after_title' 	=> '</h2>',
+		'after_widget' 	=> '</div><!-- container --></aside>',
+	) );
 }
